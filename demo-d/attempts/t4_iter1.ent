@@ -1,0 +1,14 @@
+effect Approval suspending { request : Data -> Data @at_least_once }
+effect Ledger   suspending { post    : Data -> Data @at_least_once }
+
+def guard : Int -[Approval, Ledger]-> Data =
+  fn amount ->
+    let entry = Entry(amount) in
+    let w = str_of_int(amount) in
+    if amount < 100 then
+      Posted(do Ledger.post(entry) witness concat("idem:", w))
+    else
+      match do Approval.request(entry) witness concat("req:", w) {
+        approve() -> Posted(do Ledger.post(entry) witness concat("idem:", w))
+        reject()  -> Denied(amount)
+      }

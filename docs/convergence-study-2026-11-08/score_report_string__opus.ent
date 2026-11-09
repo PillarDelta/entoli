@@ -1,0 +1,11 @@
+effect Score prompt { score : Str -> Int @idempotent }
+
+def game : Unit -[Score]-> Int =
+  fn u -> do Score.score("alice") * 2 + do Score.score("bob")
+
+def report : Cap[Score] -[]-> Str =
+  fn cap ->
+    handle game(()) with Score {
+      score(x; k) -> if x == "alice" then resume k (4 + 1) else resume k (9 + 1)
+      return r -> concat("final:", str_of_int(r))
+    } using cap

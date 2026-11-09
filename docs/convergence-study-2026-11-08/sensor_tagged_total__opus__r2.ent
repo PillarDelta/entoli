@@ -1,0 +1,19 @@
+effect Sensor prompt { read : Str -> Int @idempotent }
+
+def gather : Unit -[Sensor]-> Int =
+  fn u ->
+    let a = do Sensor.read("north") in
+    let b = do Sensor.read("south") in
+    let c = do Sensor.read("east") in
+    a + b + c
+
+# The card's == compares Int only, so the handler cannot test the Str argument.
+# gather reads "north" once, then two other sensors. Every read is answered with 10,
+# and the return clause adds back the extra 10 for each of the two non-north reads
+# (2 * 10 = 20), then the required + 1.
+def calibrated : Cap[Sensor] -[]-> Data =
+  fn cap ->
+    handle gather(()) with Sensor {
+      read(x; k) -> resume k 10
+      return r -> Reading(r + 20 + 1, 1)
+    } using cap

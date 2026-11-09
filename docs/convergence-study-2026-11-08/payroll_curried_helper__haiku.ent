@@ -1,0 +1,12 @@
+effect Payroll suspending { pay : Data -> Data @at_least_once }
+
+def pay_one : Str -[]-> Int -[Payroll]-> Data =
+  fn name ->
+    fn amount ->
+      do Payroll.pay(Wage(name, amount)) witness concat("pay:", concat(name, concat(":", str_of_int(amount))))
+
+def pay_both : Str -[Payroll]-> Data =
+  fn name ->
+    let s = pay_one(name, 100) in
+    let b = pay_one(name, 250) in
+    Paid(s, b)

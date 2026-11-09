@@ -1,0 +1,34 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/entoli-syntax",
+    "crates/entoli-core",
+    "crates/entoli-encode",
+    "crates/entoli-store",
+    "crates/entoli-runtime",
+    "crates/entoli-recovery",
+    "crates/entoli-testkit",
+    "crates/entoli-cli",
+    "crates/entoli-types",
+    "crates/entoli-check",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+
+[workspace.dependencies]
+sha2 = "0.10"
+rusqlite = { version = "0.32", features = ["bundled"] }
+entoli-syntax = { path = "crates/entoli-syntax" }
+entoli-core = { path = "crates/entoli-core" }
+entoli-encode = { path = "crates/entoli-encode" }
+entoli-store = { path = "crates/entoli-store" }
+entoli-runtime = { path = "crates/entoli-runtime" }
+entoli-recovery = { path = "crates/entoli-recovery" }
+entoli-testkit = { path = "crates/entoli-testkit" }
+entoli-types = { path = "crates/entoli-types" }
+entoli-check = { path = "crates/entoli-check" }
+
+[profile.release]
+debug = true

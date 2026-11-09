@@ -1,0 +1,7 @@
+[package]
+name = "entoli-core"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+entoli-syntax.workspace = true

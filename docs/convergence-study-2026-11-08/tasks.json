@@ -1,0 +1,50 @@
+[
+ {
+  "id": "sensor_tagged_total",
+  "statement": "Declare a prompt effect Sensor with one operation read : Str -> Int that is @idempotent. Write def gather : Unit -[Sensor]-> Int that returns the sum of reading \"north\", \"south\" and \"east\", in that order. Then write def calibrated : Cap[Sensor] -[]-> Data that runs gather(()) under a Sensor handler installed with the given capability. Every read of \"north\" is answered with 10 and every other read with 20. The value of calibrated must be the constructor Reading(t, 1), where t is the sum gather computes from those answers plus 1. With these answers calibrated evaluates to Reading(51, 1)."
+ },
+ {
+  "id": "spend_guard",
+  "statement": "Declare a prompt effect Budget with operation spend : Int -> Int (@idempotent). Write def plan_small : Unit -[Budget]-> Int that returns spend(100) + spend(200), and def plan_large : Unit -[Budget]-> Int that returns spend(100) + spend(900) + spend(50). Write def guarded_small : Cap[Budget] -[]-> Data and def guarded_large : Cap[Budget] -[]-> Data. Each runs its plan under the same Budget policy: a spend of 500 or less is answered with the amount itself. A spend above 500 stops the plan at once, no later spend runs, and the whole result is OverBudget(n), where n is the offending amount. When a plan finishes normally the result is Within(total). So guarded_small gives Within(300) and guarded_large gives OverBudget(900)."
+ },
+ {
+  "id": "warehouse_dispatch",
+  "statement": "Declare a suspending effect Warehouse with two operations, reserve : Data -> Data and dispatch : Data -> Data. Both are delivered at least once by the external system. Write def ship : Int -[Warehouse]-> Data that takes a numeric order id. It first reserves Pick(id), then dispatches Box(id, r), where r is the value the reservation returned, and returns Shipped(d), where d is the value the dispatch returned. Retries must be safely deduplicated. The reservation's deduplication key is the string \"reserve:\" followed by the order id in decimal. The dispatch's key is \"dispatch:\" followed by the order id in decimal."
+ },
+ {
+  "id": "seat_booking_compensation",
+  "statement": "Model a ticketing flow with three suspending effects. Seats has hold : Data -> Data and release : Data -> Data. A hold is undone by releasing the same seat, and a release can be sent any number of times with the same outcome as sending it once. Payment has charge : Data -> Data and refund : Data -> Data. A charge is undone by a refund, and a refund may be delivered more than once by the payment network, so it needs deduplication. Receipt has issue : Data -> Data, which is delivered at least once. Give every operation a fitting delivery class. Then write def book : Str -[Seats, Payment, Receipt]-> Data that takes a seat code s. It holds Seat(s), charges Fare(s), issues Ticket(h, c) using the hold result h and the charge result c, and returns Booked(t) with the issue result t. Where a deduplication key is needed, use \"ticket:\" followed by s."
+ },
+ {
+  "id": "price_then_record",
+  "statement": "Declare a prompt effect Pricing with quote : Str -> Int (@idempotent) and a suspending effect Ledger with post : Data -> Data, delivered at least once. Write def basket : Unit -[Pricing]-> Int that returns quote(\"apple\") + quote(\"bread\"). Write def checkout : Cap[Pricing] -[Ledger]-> Data. It runs basket(()) with quotes answered locally: 3 for \"apple\" and 5 for anything else. After the basket total is known, it posts Total(n) to the ledger exactly once, where n is the total. The deduplication key is \"basket:\" followed by n in decimal. checkout returns Recorded(p), where p is the value the post returned. The ledger must never be posted while a quote is still being answered."
+ },
+ {
+  "id": "continuation_forwarder",
+  "statement": "Declare a prompt effect Tick with tick : Int -> Int (@idempotent). Write def count3 : Unit -[Tick]-> Int that returns tick(1) + tick(2) + tick(3). Write a helper def forward : (Int -[]-o Int) -[]-> Int -[]-> Int. It takes a continuation and an integer v, and continues the continuation with v + 100. Then write def run_ticks : Cap[Tick] -[]-> Int that handles count3(()) with Tick. Its tick clause must hand the continuation and the operation's argument to forward and must not continue the computation any other way. The result is 306."
+ },
+ {
+  "id": "throttle_clamp",
+  "statement": "Declare a prompt effect Throttle with request : Int -> Int (@idempotent). Write def burst : Unit -[Throttle]-> Int that returns request(-5) + request(250) + request(40). Write def clamped : Cap[Throttle] -[]-> Int that handles burst(()). Each request is answered with its argument clamped to the range 0 to 100: any value below 0 becomes 0, any value above 100 becomes 100, and other values are unchanged. The computation continues after every request, and the final result is exactly the sum burst produces, which is 140."
+ },
+ {
+  "id": "layered_store_trace",
+  "statement": "Declare a suspending effect Store with put : Data -> Data, delivered at least once, and a prompt effect Trace with note : Str -> Unit (@idempotent). Write def save : Str -[Store, Trace]-> Data. Given a key, it first notes concat(\"saving \", key), then puts Entry(key) with deduplication key concat(\"put:\", key), and returns the put's result. Write def save_pair as a two-argument curried def taking two keys a and b. It saves a, then saves b, and returns Pair(x, y) of the two results. Give it the narrowest correct rows. Finally write def run_pair : Cap[Trace] -[Store]-> Data. It evaluates save_pair(\"alpha\", \"beta\") with every note silently acknowledged, while the Store operations stay unhandled."
+ },
+ {
+  "id": "score_report_string",
+  "statement": "Declare a prompt effect Score with score : Str -> Int (@idempotent). Write def game : Unit -[Score]-> Int that returns score(\"alice\") * 2 + score(\"bob\"). Write def report : Cap[Score] -[]-> Str that runs game(()) with \"alice\" scored 4 and every other player scored 9, each answer first increased by 1. The final value is the string \"final:\" followed by game's total in decimal. With these answers that string is \"final:20\". The answers given to game must be integers, and the string must be built only from game's completed total."
+ },
+ {
+  "id": "payroll_curried_helper",
+  "statement": "Declare a suspending effect Payroll with pay : Data -> Data, delivered at least once. Write a curried two-argument def pay_one that takes an employee name (Str) and an amount (Int). It pays Wage(name, amount) and returns the result. Its deduplication key is the name, then \":\", then the amount in decimal, all after the prefix \"pay:\". Two payments to the same person with different amounts must never be treated as duplicates. Write def pay_both : Str -[Payroll]-> Data that pays the given employee a salary of 100 and then a bonus of 250 using pay_one, and returns Paid(s, b) with the two results. Annotate every def with a correct row."
+ },
+ {
+  "id": "lookup_policy",
+  "statement": "Declare a prompt effect Lookup with find : Data -> Int (@idempotent). Write def scan_ok : Unit -[Lookup]-> Int returning find(Known(3)) + find(Unknown()) + find(Known(5)). Write def scan_bad : Unit -[Lookup]-> Int returning find(Known(3)) + find(Banned(9)) + find(Known(5)). Write a single helper def policy : Unit -[Lookup]-> Int ... no: write def resolve_ok : Cap[Lookup] -[]-> Data and def resolve_bad : Cap[Lookup] -[]-> Data. Both handle their scan under the same rules, which depend on the shape of the argument. Known(n) is answered with n * 2. Banned(n) ends the scan immediately, and the whole result is Refused(n). Anything else is answered with 0. A scan that finishes gives Found(total). So resolve_ok gives Found(16) and resolve_bad gives Refused(9)."
+ },
+ {
+  "id": "nested_ask_log",
+  "statement": "Declare two prompt effects: Ask with ask : Int -> Int (@idempotent) and Log with info : Str -> Unit (@idempotent). Write def job : Unit -[Ask, Log]-> Int that logs \"start\" and then returns ask(1) + ask(2). Write def run_job : Cap[Ask] -[]-> Cap[Log] -[]-> Int, which takes both capabilities. Ask is handled by an inner handler installed with the Ask capability. That handler answers each ask(x) with x * 10, but first it logs concat(\"asked \", str_of_int(x)). Log is handled by an outer handler installed with the Log capability, which acknowledges every message, including the ones the Ask handler emits. run_job returns 30 and performs no unhandled effects."
+ }
+]

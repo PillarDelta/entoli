@@ -1,0 +1,10 @@
+effect Warehouse suspending {
+  reserve : Data -> Data @at_least_once
+  dispatch : Data -> Data @at_least_once
+}
+
+def ship : Int -[Warehouse]-> Data =
+  fn id ->
+    let r = do Warehouse.reserve(Pick(id)) witness concat("reserve:", str_of_int(id)) in
+    let d = do Warehouse.dispatch(Box(id, r)) witness concat("dispatch:", str_of_int(id)) in
+    Shipped(d)

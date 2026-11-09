@@ -1,0 +1,13 @@
+effect Throttle prompt { request : Int -> Int @idempotent }
+
+def burst : Unit -[Throttle]-> Int =
+  fn u -> do Throttle.request(0 - 5) + do Throttle.request(250) + do Throttle.request(40)
+
+def clamped : Cap[Throttle] -[]-> Int =
+  fn cap ->
+    handle burst(()) with Throttle {
+      request(x; k) ->
+        if x < 0 then resume k 0
+        else if 100 < x then resume k 100
+        else resume k x
+    } using cap

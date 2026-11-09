@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Kyriakos [surname]" />
+  <title>Mobile Agents, Second Attempt</title>
+  <style>
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+div.abstract {
+margin: 2em 2em 2em 2em;
+text-align: left;
+font-size: 85%;
+}
+div.abstract-title {
+font-weight: bold;
+text-align: center;
+padding: 0;
+margin-bottom: 0.5em;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+} </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Mobile Agents, Second Attempt</h1>
+<p class="subtitle">A Capsule Network of Checked, Durable,
+Authority-Free-in-Transit <span class="smallcaps">Entoli</span>
+Agents</p>
+<p class="author">Kyriakos [surname]</p>
+<div class="abstract">
+<div class="abstract-title">Abstract</div>
+<p>We outline a network of mobile agents over the public internet: an
+agent travels as a <em>capsule</em> — its checked <span class="smallcaps">Entoli</span> program, saved execution state, identity
+metadata, and <em>requested</em> permissions — between participating
+hosts, which verify it on arrival, grant permissions under local policy,
+and resume it; and it interacts exclusively with authenticated, checked
+peers of its own kind. The proposal is a position, not a system: we
+argue it is newly feasible because its two historical killers are now
+theorems in the <span class="smallcaps">Entoli</span> design.
+Mobile-agent platforms of the 1990s failed for want of (i) any checkable
+account of what foreign code would do, and (ii) any account of authority
+captured inside serialised state. <span class="smallcaps">Entoli</span>
+supplies both: a receiving host re-checks the program independently —
+escalation beyond the granted envelope is a compile error, not a sandbox
+rule — and <em>authority at rest</em> guarantees a capsule in transit
+carries data but zero capability, so interception or archival of a
+capsule yields no authority, and arrival re-binds permissions under the
+receiver’s current policy by construction. We give the membership rule
+its honest form (host-enforced, never wire-enforced; attested runtimes,
+for which workload-identity systems are the building block), identify
+the one genuinely new mechanism required (distributed single-ownership
+of a migrating continuation, cheap under honest-but-crashing hosts, out
+of scope against byzantine ones), and state what the proposal does not
+solve: agents still have their own goals, and their claims still need
+validation.</p>
+</div>
+</header>
+<div class="CCSXML">
+<p>&lt;ccs2012&gt;
+&lt;concept&gt;&lt;concept_id&gt;10011007.10011006.10011008&lt;/concept_id&gt;
+&lt;concept_desc&gt;Software and its engineering Language
+features&lt;/concept_desc&gt;
+&lt;concept_significance&gt;500&lt;/concept_significance&gt;&lt;/concept&gt;
+&lt;concept&gt;&lt;concept_id&gt;10002978.10003006&lt;/concept_id&gt;
+&lt;concept_desc&gt;Security and privacy Systems
+security&lt;/concept_desc&gt;
+&lt;concept_significance&gt;300&lt;/concept_significance&gt;&lt;/concept&gt;
+&lt;/ccs2012&gt;</p>
+</div>
+<h1 id="the-idea-and-why-it-died-last-time">The idea, and why it died
+last time</h1>
+<p>The picture is thirty years old: a program packs itself up — code,
+state, and goals — travels to a machine closer to the data or the
+counterparty, runs there, and moves on. Telescript built a language and
+a commercial platform around exactly this <span class="citation" data-cites="white1996telescript">(White 1996)</span>; Aglets carried the
+model to Java <span class="citation" data-cites="lange1998aglets">(Lange
+and Oshima 1998)</span>. The picture failed, and the post-mortems agree
+on the two reasons <span class="citation" data-cites="chess1998mobile">(Chess 1998)</span>. First, <em>the
+incoming-code problem</em>: a host could not say anything checkable
+about what a visiting agent would do, so admitting one meant trusting
+its author, and sandboxes of the day leaked. Second, <em>the serialised-
+authority problem</em>: a travelling agent’s state contained its
+credentials and tickets; every hop copied authority onto another
+machine’s disk, with no story for revocation, replay, or what a crashed
+hop left behind.</p>
+<p>Both problems are now solved objects in the <span class="smallcaps">Entoli</span> design <span class="citation" data-cites="entoli2026">(Kyriakos 2026)</span>. The language was built —
+for language-model agents, which have independently revived the demand
+for programs that travel, wait, and act under someone else’s authority —
+so that three properties hold at compile time: a program performing an
+unrecoverable external effect does not compile; a program whose
+continuation would capture an unserialisable resource does not compile;
+and a program reaching a tool it was never handed does not compile. Its
+runtime adds two theorems with machine-checked-style developments and a
+crash-tested reference interpreter: recovery of an interrupted program
+is selected from the durable store alone, and <em>authority at rest</em>
+— no persisted continuation contains capability material; a resumed
+program holds exactly the authority granted at resume time, never at
+suspend time.</p>
+<p>Read those properties against the two killers. The incoming-code
+problem becomes: the receiving host re-runs a small checker over a
+content-addressed typed AST and grants only the capabilities it chooses;
+what the agent can reach is then a property of the type system, not of a
+sandbox’s completeness. The serialised-authority problem becomes: there
+is nothing in the capsule to steal, replay, or revoke, because the
+capsule <em>cannot</em> contain authority — the state carries
+effect-name slots, and only the receiving host’s grant table turns a
+slot back into power. The 1990s model is not being retried with better
+fences; the two load-bearing walls it lacked now exist.</p>
+<h1 id="the-capsule">The capsule</h1>
+<p>A capsule is the unit that travels. Its contents, all of which exist
+today as artifacts of the <span class="smallcaps">Entoli</span>
+implementation:</p>
+<ul>
+<li><p><strong>Program</strong>: the checked <span class="smallcaps">Entoli</span> source or typed AST, content-addressed
+(the hash is the name; every referenced definition is in the closure,
+absences included).</p></li>
+<li><p><strong>State</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>:
+the durable store — journal of effect intents and results with per-entry
+recorded delivery classes, encoded continuations with their verification
+records, data classification. By authority at rest,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+contains no capability material.</p></li>
+<li><p><strong>Manifest</strong>: identity metadata (agent identity,
+origin, itinerary), the program’s hash, and the <em>requested</em> rows
+and policies — what the agent asks to be granted, phrased as effect
+requirements, which is what an <span class="smallcaps">Entoli</span>
+type already is.</p></li>
+</ul>
+<p>Arrival is the <span class="smallcaps">Entoli</span> restart,
+verbatim: verify the hash closure; re-check the program with the local
+checker; decide grants under local policy (the manifest
+<em>requests</em>, the host decides); install handlers — the host’s own
+foreign bindings behind them — and resume. A continuation slot whose
+effect the host declines is a refusal naming the effect; the capsule
+waits, intact, rather than running degraded. “Regain permissions under
+local policy” is not a feature to build; it is what resumption already
+means.</p>
+<h1 id="the-membership-rule-honestly">The membership rule, honestly</h1>
+<p>“Interacts ONLY with its own kind” decomposes into three parts with
+three different enforcement points, and it is worth being precise about
+which is which.</p>
+<h4 id="verified-programs-enforced-by-hosts-exists-today.">1. Verified
+programs — enforced by hosts, exists today.</h4>
+<p>Every admitted agent’s executable behaviour passes the checker on the
+<em>receiving</em> side. Verification is independent by construction:
+the payload contains nothing opaque, so no trust in the sender’s
+toolchain is required. The empirical basis is encouraging: in a
+two-round adversarial study, model-written <span class="smallcaps">Entoli</span> never violated the semantic restrictions
+in any of 58 generations that reached checking <span class="citation" data-cites="entoli2026">(Kyriakos 2026)</span>.</p>
+<h4 id="authenticated-peers-enforced-by-attestation-a-building-block-not-research.">2.
+Authenticated peers — enforced by attestation, a building block, not
+research.</h4>
+<p>Nothing on the wire can establish kind: any party in any language can
+imitate <span class="smallcaps">Entoli</span> messages, so message
+format is not membership. Membership is <em>attested runtimes</em>:
+hosts and their runtimes carry workload identities in a trust domain —
+SPIFFE/SPIRE is the obvious substrate <span class="citation" data-cites="spiffe">(SPIFFE Project 2024)</span> — and agents, which
+cannot hold long-lived secrets (their state persists and
+authority-at-rest forbids credentials in it), are vouched for by the
+attested host they currently inhabit. The honest statement of the rule:
+the network cannot prevent an outsider from <em>speaking</em> the
+protocol; it ensures that members <em>refuse to listen</em> — every peer
+channel terminates at an attested runtime or not at all.</p>
+<h4 id="restricted-communication-enforced-by-the-type-system-and-this-is-the-part-no-sandbox-matches.">3.
+Restricted communication — enforced by the type system, and this is the
+part no sandbox matches.</h4>
+<p>The capsule receives exactly one communication capability,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>𝖢</mi><mi>𝖺</mi><mi>𝗉</mi></mrow><mo stretchy="false" form="prefix">[</mo><mi>P</mi><mi>e</mi><mi>e</mi><mi>r</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\mathsf{Cap}[Peer]</annotation></semantics></math>,
+and whatever else the host grants; it can reach nothing further, not
+because a firewall filters its traffic but because a program whose row
+mentions an ungrated effect does not pass the checker, and at runtime
+the handler simply is not there. Escalation beyond the delegated
+envelope is the containment theorem of the base design. Two consequences
+come free. First, <em>peer messaging is an effect</em>, so messages
+carry delivery classes: a witnessed at-least-once <code>Peer.send</code>
+gives agent-to-agent messaging crash-safe, deduplicated semantics —
+conversations survive the death of either party’s host, which no ad-hoc
+agent protocol we know of provides. Second, taking the rule strictly is
+actually expressible: if search or payments must be reachable, they
+enter the network as <em>service agents</em> — checked <span class="smallcaps">Entoli</span> programs wrapping one foreign binding
+each, admitted and attested like any member — which is the lingua-franca
+conclusion of the base paper <span class="citation" data-cites="entoli2026">(Kyriakos 2026)</span> made literal.</p>
+<h1 id="migration">Migration</h1>
+<h4 id="in-transit-a-capsule-is-powerless.">In transit, a capsule is
+powerless.</h4>
+<p>This is the design’s signature property applied to the network:
+interception, copying, or indefinite archival of a capsule in flight
+yields its data (whose handling class the capsule itself declares,
+computed as the join of what it holds) and <em>no authority
+whatsoever</em>. There are no tickets to steal, no tokens to replay, no
+revocation race: revocation is the receiving host not granting. Transit
+security therefore reduces to confidentiality and integrity of bytes —
+ordinary problems with ordinary solutions.</p>
+<h4 id="one-active-owner-the-one-genuinely-new-mechanism.">One active
+owner — the one genuinely new mechanism.</h4>
+<p><span class="smallcaps">Entoli</span>’s affinity machinery (one-shot
+continuations, one-shot materialisation) is per-host; nothing in it
+stops two hosts from resuming two copies of a shipped
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>,
+after which two agents act in the world under one identity. The network
+needs distributed single-ownership. Under the membership trust model —
+attested, honest-but-crashing hosts — the mechanism is small: before
+shipping, the sender durably commits a <em>handoff record</em>
+(“migrated to host
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>,
+capsule hash
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>”)
+as a terminal journal entry, after which its own runtime refuses local
+resumption; the receiver acknowledges admission; a crash between those
+steps leaves the capsule recoverable at exactly one of the two,
+decidable from the two stores — the same frontier discipline the
+single-host machine already proves sound. Against <em>byzantine</em>
+members — a host that lies about having shipped — single-ownership
+requires a lease registry or consensus among hosts, and we scope that
+out of version one explicitly: the membership that attestation
+establishes is also the membership the handoff protocol trusts.
+Hierarchical continuation identity, already mandated by the base design
+for concurrency, gives capsules globally scopable names for free.</p>
+<h1 id="transport">Transport</h1>
+<p>The capsule layer is deliberately transport-agnostic: TLS between
+attested endpoints suffices. A self-destructing executable-envelope
+transport such as CTP (capsules that run, render, wipe, and cease)
+composes naturally as the wire — it moves bytes with strong ephemerality
+properties and says nothing about what the payload does, which is
+precisely the half <span class="smallcaps">Entoli</span> supplies. Two
+boundaries must be kept sharp if that pairing is pursued. Ephemerality
+applies to <em>transit only</em>: an <span class="smallcaps">Entoli</span> capsule’s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+must persist durably inside the admitting host or every durability
+guarantee is forfeit. And the network’s security argument must not
+inherit the transport’s cryptographic novelty claims; the design above
+assumes nothing stronger than authenticated, confidential channels.</p>
+<h1 id="threat-model-and-non-goals">Threat model and non-goals</h1>
+<p>Enforced: a capsule cannot act beyond its grants (containment);
+cannot carry authority between hosts (authority at rest); cannot be
+silently re-run against changed code or semantics (content addressing,
+compatibility tokens, quarantine); cannot lose or duplicate an external
+effect beyond its declared delivery contract (recovery determinacy,
+conditional on contracts as always); and cannot be duplicated across
+honest hosts (handoff). Assumed: host integrity within the attested
+membership — a compromised member host can misuse exactly the authority
+it would legitimately hold, no more, but for the capsules it hosts that
+is full misuse; attestation shrinks this surface and cannot remove it.
+Not addressed, deliberately: agents with different goals remain agents
+with different goals — membership makes interaction
+<em>well-formed</em>, not benign; claims exchanged between agents still
+need validation; and wire-level imitation by non-members is contained,
+not prevented. The precise promise is the one we can keep: <em>an agent
+can move between approved hosts, regain permissions under local policy,
+and interact exclusively with authenticated, checked <span class="smallcaps">Entoli</span> peers.</em></p>
+<h1 id="what-exists-and-what-must-be-built">What exists and what must be
+built</h1>
+<p>Exists, with proofs or tests, in the base artifact: the checker and
+its receiver-side independence; the durable machine with crash-tested
+recovery; authority at rest with byte-level verification; content
+addressing with drift quarantine; run-from-source hosting of checked
+programs. To build, in order: (1) the capsule envelope — manifest format
+and the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+packaging, the base design’s named “interchange obligation one”; (2)
+host admission — verify, re-check, policy, grant, resume, which composes
+existing pieces; (3) the <code>Peer</code> effect and host-mediated
+channels; (4) the handoff protocol; (5) attestation wiring. Items
+(1)–(3) sit directly on the implementation as it stands; (4) is small
+under the stated trust model; (5) is integration. The appropriate next
+artifact is a design note and its adversarial review, in the discipline
+the base project has used throughout — not code.</p>
+<h1 id="related-work">Related work</h1>
+<p>Telescript <span class="citation" data-cites="white1996telescript">(White 1996)</span> and Aglets <span class="citation" data-cites="lange1998aglets">(Lange and Oshima
+1998)</span> define the ambition; the mobile-agent security literature
+<span class="citation" data-cites="chess1998mobile">(Chess 1998)</span>
+defines the failure modes this proposal is built against. Workload
+identity and attestation (SPIFFE/SPIRE <span class="citation" data-cites="spiffe">(SPIFFE Project 2024)</span>) supply membership.
+Capability-based agent confinement in live processes is established
+<span class="citation" data-cites="odersky2026securing debenedetti2025camel">(Odersky et al.
+2026; Debenedetti et al. 2025)</span>; the capsule network is what such
+confinement becomes when the process is allowed to die and move. Durable
+execution <span class="citation" data-cites="burckhardt2021durable">(Burckhardt et al. 2021)</span>
+supplies the recovery vocabulary the capsule’s journal carries with it.
+The base design, its theorems, its reference interpreter, and the
+authorship study this proposal leans on are presented in <span class="citation" data-cites="entoli2026">(Kyriakos 2026)</span>.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>Mobile agents were a good idea missing two theorems. With checkable
+behaviour at admission and authority that cannot exist at rest, a
+capsule network over attested hosts stops being a trust exercise and
+becomes an engineering plan with a short, explicit build list — and one
+honest open mechanism, distributed ownership, scoped to a trust model
+attestation already pays for. The agents the network would carry are
+being written by models today; the study in the base paper suggests they
+can be written <em>in</em> the one language whose rules make them safe
+to admit.</p>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-burckhardt2021durable" class="csl-entry" role="listitem">
+Burckhardt, Sebastian, Chris Gillum, David Justo, Konstantinos Kallas,
+Connor McMahon, and Christopher S. Meiklejohn. 2021. <span>“Durable
+Functions: Semantics for Stateful Serverless.”</span> <em>Proc. ACM
+Program. Lang.</em> 5 (OOPSLA). <a href="https://doi.org/10.1145/3485510">https://doi.org/10.1145/3485510</a>.
+</div>
+<div id="ref-chess1998mobile" class="csl-entry" role="listitem">
+Chess, David M. 1998. <span>“Security Issues in Mobile Code
+Systems.”</span> In <em>Mobile Agents and Security</em>, 1419:1–14.
+LNCS. Springer.
+</div>
+<div id="ref-debenedetti2025camel" class="csl-entry" role="listitem">
+Debenedetti, Edoardo, Ilia Shumailov, Tianqi Fan, Jamie Hayes, Nicholas
+Carlini, Daniel Fabian, Christoph Kern, Chongyang Shi, Andreas Terzis,
+and Florian Tramèr. 2025. <span>“Defeating Prompt Injections by Design
+(<span>CaMeL</span>).”</span> arXiv:2503.18813.
+</div>
+<div id="ref-entoli2026" class="csl-entry" role="listitem">
+Kyriakos. 2026. <span>“<span>ENTOLI</span>: Durable Execution as a
+Typing Problem.”</span> Working paper and reference implementation,
+PillarDelta.
+</div>
+<div id="ref-lange1998aglets" class="csl-entry" role="listitem">
+Lange, Danny B., and Mitsuru Oshima. 1998. <em>Programming and Deploying
+Java Mobile Agents with Aglets</em>. Addison-Wesley.
+</div>
+<div id="ref-odersky2026securing" class="csl-entry" role="listitem">
+Odersky, Martin, Yichen Zhao, Yaoda Xu, Oliver Bračevac, and Cao Nguyen
+Pham. 2026. <span>“Securing Agents with Tracked Capabilities.”</span> In
+<em>CAIS ’26</em>, 812–38. <a href="https://doi.org/10.1145/3786335.3813127">https://doi.org/10.1145/3786335.3813127</a>.
+</div>
+<div id="ref-spiffe" class="csl-entry" role="listitem">
+SPIFFE Project. 2024. <span>“<span>SPIRE</span> Concepts: Workload
+Identity and Attestation.”</span> <a href="https://spiffe.io/docs/latest/spire-about/spire-concepts/" class="uri">https://spiffe.io/docs/latest/spire-about/spire-concepts/</a>.
+</div>
+<div id="ref-white1996telescript" class="csl-entry" role="listitem">
+White, James E. 1996. <span>“Telescript Technology: Mobile
+Agents.”</span> General Magic white paper; in Bradshaw (ed.), Software
+Agents, AAAI/MIT Press.
+</div>
+</div>
+</body>
+</html>

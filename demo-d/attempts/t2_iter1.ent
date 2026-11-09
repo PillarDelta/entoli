@@ -1,0 +1,12 @@
+effect Inventory suspending {
+  reserve : Data -> Data @compensable(Inventory.release)
+  release : Data -> Data @idempotent
+}
+
+effect Ledger suspending { post : Data -> Data @at_least_once }
+
+def book : Str -[Inventory, Ledger]-> Data =
+  fn name ->
+    let reservation = do Inventory.reserve(Item(name)) in
+    let receipt = do Ledger.post(Entry(name, 50)) witness concat("idem:", name) in
+    Booked(reservation, receipt)

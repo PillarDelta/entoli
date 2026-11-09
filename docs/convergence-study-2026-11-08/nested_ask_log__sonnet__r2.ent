@@ -1,0 +1,22 @@
+effect Ask prompt { ask : Int -> Int @idempotent }
+effect Log prompt { info : Str -> Unit @idempotent }
+
+def job : Unit -[Ask, Log]-> Int =
+  fn u ->
+    let s = do Log.info("start") in
+    do Ask.ask(1) + do Ask.ask(2)
+
+def run_job : Cap[Ask] -[]-> Cap[Log] -[]-> Int =
+  fn ca ->
+    fn cl ->
+      handle (
+        handle job(()) with Ask {
+          ask(x; k) ->
+            let w = do Log.info(concat("asked ", str_of_int(x))) in
+            resume k (x * 10)
+          return r -> r
+        } using ca
+      ) with Log {
+        info(m; k) -> resume k ()
+        return r -> r
+      } using cl

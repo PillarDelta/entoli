@@ -1,0 +1,10 @@
+[package]
+name = "entoli-check"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+entoli-syntax.workspace = true
+entoli-types.workspace = true
+entoli-core.workspace = true
+entoli-encode.workspace = true

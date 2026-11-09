@@ -1,0 +1,134 @@
+[
+ {
+  "task_id": "sensor_tagged_total",
+  "model": "haiku",
+  "pass": false,
+  "diag": "DIAG E000: prim argument: expected Int, found Str | DIAG E000: prim argument: expected Int, found Str"
+ },
+ {
+  "task_id": "sensor_tagged_total",
+  "model": "sonnet",
+  "pass": true,
+  "diag": ""
+ },
+ {
+  "task_id": "sensor_tagged_total",
+  "model": "opus",
+  "pass": true,
+  "diag": ""
+ },
+ {
+  "task_id": "price_then_record",
+  "model": "haiku",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 429: expected \"(\", got Some(Punct(\"->\"))"
+ },
+ {
+  "task_id": "price_then_record",
+  "model": "sonnet",
+  "pass": false,
+  "diag": "DIAG E000: prim argument: expected Int, found Str | DIAG E000: prim argument: expected Int, found Str"
+ },
+ {
+  "task_id": "price_then_record",
+  "model": "opus",
+  "pass": true,
+  "diag": ""
+ },
+ {
+  "task_id": "continuation_forwarder",
+  "model": "haiku",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 245: expected `effect` or `def`"
+ },
+ {
+  "task_id": "continuation_forwarder",
+  "model": "sonnet",
+  "pass": true,
+  "diag": ""
+ },
+ {
+  "task_id": "continuation_forwarder",
+  "model": "opus",
+  "pass": true,
+  "diag": ""
+ },
+ {
+  "task_id": "throttle_clamp",
+  "model": "sonnet",
+  "pass": true,
+  "diag": ""
+ },
+ {
+  "task_id": "layered_store_trace",
+  "model": "haiku",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 575: expected \"(\", got Some(Punct(\"->\"))"
+ },
+ {
+  "task_id": "layered_store_trace",
+  "model": "sonnet",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 573: expected \"(\", got Some(Punct(\"->\"))"
+ },
+ {
+  "task_id": "layered_store_trace",
+  "model": "opus",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 579: expected \"(\", got Some(Punct(\"->\"))"
+ },
+ {
+  "task_id": "score_report_string",
+  "model": "haiku",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 402: expected \"(\", got Some(Punct(\"->\"))"
+ },
+ {
+  "task_id": "score_report_string",
+  "model": "sonnet",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 390: expected \"(\", got Some(Punct(\"->\"))"
+ },
+ {
+  "task_id": "score_report_string",
+  "model": "opus",
+  "pass": false,
+  "diag": "DIAG E000: prim argument: expected Int, found Str | DIAG E000: prim argument: expected Int, found Str"
+ },
+ {
+  "task_id": "lookup_policy",
+  "model": "haiku",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 478: expected identifier, got Some(Punct(\"->\"))"
+ },
+ {
+  "task_id": "lookup_policy",
+  "model": "sonnet",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 493: expected identifier, got Some(Punct(\"->\"))"
+ },
+ {
+  "task_id": "lookup_policy",
+  "model": "opus",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 529: unexpected Some(Punct(\")\"))"
+ },
+ {
+  "task_id": "nested_ask_log",
+  "model": "haiku",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 416: unexpected Some(Punct(\"}\"))"
+ },
+ {
+  "task_id": "nested_ask_log",
+  "model": "sonnet",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 487: expected \"(\", got Some(Punct(\"->\"))"
+ },
+ {
+  "task_id": "nested_ask_log",
+  "model": "opus",
+  "pass": false,
+  "diag": "PARSE-ERROR parse error at offset 616: expected \"(\", got Some(Punct(\"->\"))"
+ }
+]

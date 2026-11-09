@@ -1,0 +1,11 @@
+experiment,param,total_secs,per_effect_ms,db_bytes,entries,max_blob_bytes
+depth_blob,10,0.0010,0.9614,36864,1,488
+depth_blob,25,0.0009,0.9208,36864,1,1058
+depth_blob,50,0.0009,0.9492,36864,1,2008
+depth_blob,100,0.0011,1.0619,36864,1,3908
+depth_blob,200,0.0014,1.4279,40960,1,8008
+journal_growth,25,0.0150,0.6012,61440,25,959
+journal_growth,50,0.0324,0.6484,131072,50,1809
+journal_growth,100,0.0654,0.6541,425984,100,3509
+journal_growth,200,0.1241,0.6206,1208320,200,6909
+journal_growth,400,0.2622,0.6554,4403200,400,13709

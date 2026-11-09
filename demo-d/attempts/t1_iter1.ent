@@ -1,0 +1,12 @@
+effect Approval suspending { request : Data -> Data @at_least_once }
+effect Ledger   suspending { refund  : Data -> Data @at_least_once }
+
+def make_order : Str -[]-> Data = fn id -> Order(id, 120)
+
+def process : Str -[Approval, Ledger]-> Data =
+  fn id ->
+    let order = make_order(id) in
+    match do Approval.request(order) witness concat("req:", id) {
+      approve() -> Refunded(do Ledger.refund(order) witness concat("idem:", id))
+      reject()  -> Denied(order)
+    }

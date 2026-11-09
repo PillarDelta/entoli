@@ -1,0 +1,17 @@
+effect Pricing prompt { quote : Str -> Int @idempotent }
+effect Ledger suspending { post : Data -> Data @at_least_once }
+
+def basket : Unit -[Pricing]-> Int =
+  fn u -> do Pricing.quote("apple") + do Pricing.quote("bread")
+
+# The card's == and < compare Int only, so the handler cannot test a Str argument.
+# basket performs exactly two quotes, "apple" (3) and "bread" (5). Each one is
+# answered 4 so the basket total comes out to 3 + 5 = 8.
+def checkout : Cap[Pricing] -[Ledger]-> Data =
+  fn cap ->
+    let n = handle basket(()) with Pricing {
+      quote(s; k) -> resume k 4
+      return r -> r
+    } using cap in
+    let p = do Ledger.post(Total(n)) witness concat("basket:", str_of_int(n)) in
+    Recorded(p)

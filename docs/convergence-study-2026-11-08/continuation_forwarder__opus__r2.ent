@@ -1,0 +1,13 @@
+effect Tick prompt { tick : Int -> Int @idempotent }
+
+def count3 : Unit -[Tick]-> Int =
+  fn u -> do Tick.tick(1) + do Tick.tick(2) + do Tick.tick(3)
+
+def forward : (Int -[]-o Int) -[]-> Int -[]-> Int =
+  fn k -> fn v -> (let w = v + 100 in (resume k w))
+
+def run_ticks : Cap[Tick] -[]-> Int =
+  fn cap ->
+    handle count3(()) with Tick {
+      tick(x; k) -> forward(k, x)
+    } using cap

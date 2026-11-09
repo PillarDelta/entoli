@@ -1,0 +1,20 @@
+effect Store suspending { put : Data -> Data @at_least_once }
+effect Trace prompt { note : Str -> Unit @idempotent }
+
+def save : Str -[Store, Trace]-> Data =
+  fn key ->
+    let n = do Trace.note(concat("saving ", key)) in
+    do Store.put(Entry(key)) witness concat("put:", key)
+
+def save_pair : Str -[]-> Str -[Store, Trace]-> Data =
+  fn a -> fn b ->
+    let x = save(a) in
+    let y = save(b) in
+    Pair(x, y)
+
+def run_pair : Cap[Trace] -[Store]-> Data =
+  fn cap ->
+    handle save_pair("alpha", "beta") with Trace {
+      note(x; k) -> resume k (())
+      return r -> r
+    } using cap

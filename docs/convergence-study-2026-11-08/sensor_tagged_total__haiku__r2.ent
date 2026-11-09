@@ -1,0 +1,19 @@
+effect Sensor prompt { read : Str -> Int @idempotent }
+
+# BLOCKED: the card provides no Str equality. `==` is Int-only (the E000 errors),
+# and nothing else in the card can branch on the content of a Str. The handler
+# below cannot tell "north" from "south" without it, so this will not compile
+# within the card's constructs. Needs either Str equality or a Str-to-Int prim.
+def gather : Unit -[Sensor]-> Int =
+  fn u ->
+    let n = do Sensor.read("north") in
+    let s = do Sensor.read("south") in
+    let e = do Sensor.read("east") in
+    n + s + e
+
+def calibrated : Cap[Sensor] -[]-> Data =
+  fn cap ->
+    handle gather(()) with Sensor {
+      read(x; k) -> if x == "north" then resume k 10 else resume k 20
+      return r -> Reading(r + 1, 1)
+    } using cap

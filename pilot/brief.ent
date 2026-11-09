@@ -1,0 +1,38 @@
+# The ENTOLI pilot: an approval-gated brief writer.
+#   draft   <- real LLM call (deduplicated by witness: recovery replays the SAME draft)
+#   gate    <- real human approval (the run EXITS pending; approve later; recover)
+#   publish <- real witnessed webhook POST
+# Run/approve/recover commands: docs/pilot-runbook.md.
+
+effect Infer    suspending { complete : Str -> Str  @at_least_once }
+effect Approval suspending { request  : Str -> Data @at_least_once }
+effect Publish  suspending { post     : Str -> Str  @at_least_once }
+
+foreign llm_svc      : Str ~> Str
+foreign approval_svc : Str ~> Data
+foreign publish_svc  : Str ~> Str
+
+def brief : Str -[Infer, Approval, Publish]-> Data =
+  fn topic ->
+    let draft = do Infer.complete(concat("Write a crisp 150-word brief on: ", topic))
+                witness concat("draft:", topic) in
+    match do Approval.request(draft) witness concat("gate:", topic) {
+      approve() -> Published(do Publish.post(draft) witness concat("pub:", topic))
+      reject()  -> Halted(topic)
+    }
+
+def wrap : Cap[Infer] -[]-> Cap[Approval] -[]-> Cap[Publish] -[]->
+           (Unit -[Infer, Approval, Publish]-> Data) -[]-> Data =
+  fn ci -> fn ca -> fn cp -> fn work ->
+    handle
+      handle
+        handle work(()) with Infer
+          { complete(x; k) -> resume k (llm_svc(x)) } using ci
+      with Approval
+        { request(x; k) -> resume k (approval_svc(x)) } using ca
+    with Publish
+      { post(x; k) -> resume k (publish_svc(x)) } using cp
+
+def main : Cap[Infer] -[]-> Cap[Approval] -[]-> Cap[Publish] -[]-> Unit -[]-> Data =
+  fn ci -> fn ca -> fn cp -> fn u ->
+    wrap(ci, ca, cp, fn u2 -> brief("durable execution for AI agents"))

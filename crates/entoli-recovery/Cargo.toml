@@ -1,0 +1,8 @@
+[package]
+name = "entoli-recovery"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+entoli-syntax.workspace = true
+entoli-runtime.workspace = true

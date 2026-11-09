@@ -1,0 +1,21 @@
+effect Budget prompt { spend : Int -> Int @idempotent }
+
+def plan_small : Unit -[Budget]-> Int =
+  fn u -> do Budget.spend(100) + do Budget.spend(200)
+
+def plan_large : Unit -[Budget]-> Int =
+  fn u -> do Budget.spend(100) + do Budget.spend(900) + do Budget.spend(50)
+
+def guarded_small : Cap[Budget] -[]-> Data =
+  fn cap ->
+    handle plan_small(()) with Budget {
+      spend(x; k) -> if x < 501 then resume k x else OverBudget(x)
+      return r -> Within(r)
+    } using cap
+
+def guarded_large : Cap[Budget] -[]-> Data =
+  fn cap ->
+    handle plan_large(()) with Budget {
+      spend(x; k) -> if x < 501 then resume k x else OverBudget(x)
+      return r -> Within(r)
+    } using cap

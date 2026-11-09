@@ -1,0 +1,15 @@
+effect Sensor prompt { read : Str -> Int @idempotent }
+
+def gather : Unit -[Sensor]-> Int =
+  fn u ->
+    let a = do Sensor.read("north") in
+    let b = do Sensor.read("south") in
+    let c = do Sensor.read("east") in
+    a + b + c
+
+def calibrated : Cap[Sensor] -[]-> Data =
+  fn cap ->
+    handle gather(()) with Sensor {
+      read(x; k) -> if x == "north" then resume k 10 else resume k 20
+      return r -> Reading(r + 1, 1)
+    } using cap

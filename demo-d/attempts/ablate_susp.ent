@@ -1,0 +1,7 @@
+effect Ask prompt { ask : Int -> Int @idempotent }
+effect Notify suspending { send : Data -> Data @idempotent }
+def main : Cap[Ask] -[Notify]-> Int =
+  fn cap ->
+    handle do Ask.ask(1) with Ask {
+      ask(x; k) -> let ig = do Notify.send(Msg(x)) in resume k x
+    } using cap

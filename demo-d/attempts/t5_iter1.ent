@@ -1,0 +1,10 @@
+effect Fetch prompt { get : Str -> Data @idempotent }
+
+def risky : Unit -[Fetch]-> Data =
+  fn u -> Pair(do Fetch.get("a"), do Fetch.get("b"))
+
+def try_it : Cap[Fetch] -[]-> Data =
+  fn cap ->
+    handle risky(()) with Fetch {
+      get(key; k) -> Failed(key)
+    } using cap

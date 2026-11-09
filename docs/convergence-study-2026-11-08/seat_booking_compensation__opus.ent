@@ -1,0 +1,17 @@
+effect Seats suspending {
+  hold    : Data -> Data @compensable(Seats.release)
+  release : Data -> Data @idempotent
+}
+effect Payment suspending {
+  charge : Data -> Data @compensable(Payment.refund)
+  refund : Data -> Data @at_least_once
+}
+effect Receipt suspending {
+  issue : Data -> Data @at_least_once
+}
+def book : Str -[Seats, Payment, Receipt]-> Data =
+  fn s ->
+    let h = do Seats.hold(Seat(s)) in
+    let c = do Payment.charge(Fare(s)) in
+    let t = do Receipt.issue(Ticket(h, c)) witness concat("ticket:", s) in
+    Booked(t)

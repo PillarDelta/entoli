@@ -1,0 +1,11 @@
+effect Counter prompt { tick : Int -> Int @idempotent }
+
+def touches : Unit -[Counter]-> Int =
+  fn u -> do Counter.tick(1) + do Counter.tick(2) + do Counter.tick(3)
+
+def total : Cap[Counter] -[]-> Int =
+  fn cap ->
+    handle touches(()) with Counter {
+      tick(x; k) -> resume k x
+      return r  -> r * 10
+    } using cap

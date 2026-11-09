@@ -1,0 +1,297 @@
+%% Position paper: the ENTOLI capsule network (mobile agents over attested hosts).
+%% Build: upload with entoli.bib to Overleaf (acmart), or see make-preview.sh.
+\documentclass[sigplan,10pt]{acmart}
+\usepackage{booktabs}
+\settopmatter{printacmref=false}
+\setcopyright{none}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\newcommand{\Cap}[1]{\mathsf{Cap}[#1]}
+\newcommand{\ecode}[1]{\textsf{#1}}
+
+\begin{document}
+
+\title{Mobile Agents, Second Attempt}
+\subtitle{A Capsule Network of Checked, Durable, Authority-Free-in-Transit \textsc{Entoli} Agents}
+
+%% TODO: surname before circulation.
+\author{Kyriakos [surname]}
+\affiliation{\institution{PillarDelta}\country{}}
+\email{ciriaco@northern-dynamics.co}
+
+\begin{abstract}
+We outline a network of mobile agents over the public internet: an agent
+travels as a \emph{capsule} --- its checked \textsc{Entoli} program, saved
+execution state, identity metadata, and \emph{requested} permissions ---
+between participating hosts, which verify it on arrival, grant permissions
+under local policy, and resume it; and it interacts exclusively with
+authenticated, checked peers of its own kind. The proposal is a position,
+not a system: we argue it is newly feasible because its two historical
+killers are now theorems in the \textsc{Entoli} design. Mobile-agent
+platforms of the 1990s failed for want of (i) any checkable account of
+what foreign code would do, and (ii) any account of authority captured
+inside serialised state. \textsc{Entoli} supplies both: a receiving host
+re-checks the program independently --- escalation beyond the granted
+envelope is a compile error, not a sandbox rule --- and \emph{authority at
+rest} guarantees a capsule in transit carries data but zero capability, so
+interception or archival of a capsule yields no authority, and arrival
+re-binds permissions under the receiver's current policy by construction.
+We give the membership rule its honest form (host-enforced, never
+wire-enforced; attested runtimes, for which workload-identity systems are
+the building block), identify the one genuinely new mechanism required
+(distributed single-ownership of a migrating continuation, cheap under
+honest-but-crashing hosts, out of scope against byzantine ones), and state
+what the proposal does not solve: agents still have their own goals, and
+their claims still need validation.
+\end{abstract}
+
+\begin{CCSXML}
+<ccs2012>
+<concept><concept_id>10011007.10011006.10011008</concept_id>
+<concept_desc>Software and its engineering~Language features</concept_desc>
+<concept_significance>500</concept_significance></concept>
+<concept><concept_id>10002978.10003006</concept_id>
+<concept_desc>Security and privacy~Systems security</concept_desc>
+<concept_significance>300</concept_significance></concept>
+</ccs2012>
+\end{CCSXML}
+\ccsdesc[500]{Software and its engineering~Language features}
+\ccsdesc[300]{Security and privacy~Systems security}
+\keywords{mobile agents, capabilities, durable execution, attestation, LLM agents}
+
+\maketitle
+
+\section{The idea, and why it died last time}
+
+The picture is thirty years old: a program packs itself up --- code, state,
+and goals --- travels to a machine closer to the data or the counterparty,
+runs there, and moves on. Telescript built a language and a commercial
+platform around exactly this~\cite{white1996telescript}; Aglets carried
+the model to Java~\cite{lange1998aglets}. The picture failed, and the
+post-mortems agree on the two reasons~\cite{chess1998mobile}. First,
+\emph{the incoming-code problem}: a host could not say anything checkable
+about what a visiting agent would do, so admitting one meant trusting its
+author, and sandboxes of the day leaked. Second, \emph{the serialised-
+authority problem}: a travelling agent's state contained its credentials
+and tickets; every hop copied authority onto another machine's disk, with
+no story for revocation, replay, or what a crashed hop left behind.
+
+Both problems are now solved objects in the \textsc{Entoli}
+design~\cite{entoli2026}. The language was built --- for language-model
+agents, which have independently revived the demand for programs that
+travel, wait, and act under someone else's authority --- so that three
+properties hold at compile time: a program performing an unrecoverable
+external effect does not compile; a program whose continuation would
+capture an unserialisable resource does not compile; and a program
+reaching a tool it was never handed does not compile. Its runtime adds
+two theorems with machine-checked-style developments and a crash-tested
+reference interpreter: recovery of an interrupted program is selected
+from the durable store alone, and \emph{authority at rest} --- no
+persisted continuation contains capability material; a resumed program
+holds exactly the authority granted at resume time, never at suspend
+time.
+
+Read those properties against the two killers. The incoming-code problem
+becomes: the receiving host re-runs a small checker over a
+content-addressed typed AST and grants only the capabilities it chooses;
+what the agent can reach is then a property of the type system, not of a
+sandbox's completeness. The serialised-authority problem becomes: there
+is nothing in the capsule to steal, replay, or revoke, because the
+capsule \emph{cannot} contain authority --- the state carries effect-name
+slots, and only the receiving host's grant table turns a slot back into
+power. The 1990s model is not being retried with better fences; the two
+load-bearing walls it lacked now exist.
+
+\section{The capsule}
+
+A capsule is the unit that travels. Its contents, all of which exist
+today as artifacts of the \textsc{Entoli} implementation:
+
+\begin{itemize}
+\item \textbf{Program}: the checked \textsc{Entoli} source or typed AST,
+  content-addressed (the hash is the name; every referenced definition is
+  in the closure, absences included).
+\item \textbf{State} $\sigma$: the durable store --- journal of effect
+  intents and results with per-entry recorded delivery classes, encoded
+  continuations with their verification records, data classification.
+  By authority at rest, $\sigma$ contains no capability material.
+\item \textbf{Manifest}: identity metadata (agent identity, origin,
+  itinerary), the program's hash, and the \emph{requested} rows and
+  policies --- what the agent asks to be granted, phrased as effect
+  requirements, which is what an \textsc{Entoli} type already is.
+\end{itemize}
+
+Arrival is the \textsc{Entoli} restart, verbatim: verify the hash
+closure; re-check the program with the local checker; decide grants
+under local policy (the manifest \emph{requests}, the host decides);
+install handlers --- the host's own foreign bindings behind them --- and
+resume. A continuation slot whose effect the host declines is a refusal
+naming the effect; the capsule waits, intact, rather than running
+degraded. ``Regain permissions under local policy'' is not a feature to
+build; it is what resumption already means.
+
+\section{The membership rule, honestly}
+
+``Interacts ONLY with its own kind'' decomposes into three parts with
+three different enforcement points, and it is worth being precise about
+which is which.
+
+\paragraph{1. Verified programs — enforced by hosts, exists today.}
+Every admitted agent's executable behaviour passes the checker on the
+\emph{receiving} side. Verification is independent by construction: the
+payload contains nothing opaque, so no trust in the sender's toolchain is
+required. The empirical basis is encouraging: in a two-round adversarial
+study, model-written \textsc{Entoli} never violated the semantic
+restrictions in any of 58 generations that reached
+checking~\cite{entoli2026}.
+
+\paragraph{2. Authenticated peers — enforced by attestation, a building
+block, not research.} Nothing on the wire can establish kind: any party
+in any language can imitate \textsc{Entoli} messages, so message format
+is not membership. Membership is \emph{attested runtimes}: hosts and
+their runtimes carry workload identities in a trust domain ---
+SPIFFE/SPIRE is the obvious substrate~\cite{spiffe} --- and agents,
+which cannot hold long-lived secrets (their state persists and
+authority-at-rest forbids credentials in it), are vouched for by the
+attested host they currently inhabit. The honest statement of the rule:
+the network cannot prevent an outsider from \emph{speaking} the
+protocol; it ensures that members \emph{refuse to listen} --- every
+peer channel terminates at an attested runtime or not at all.
+
+\paragraph{3. Restricted communication — enforced by the type system,
+and this is the part no sandbox matches.} The capsule receives exactly
+one communication capability, $\Cap{Peer}$, and whatever else the host
+grants; it can reach nothing further, not because a firewall filters
+its traffic but because a program whose row mentions an ungrated effect
+does not pass the checker, and at runtime the handler simply is not
+there. Escalation beyond the delegated envelope is the containment
+theorem of the base design. Two consequences come free. First,
+\emph{peer messaging is an effect}, so messages carry delivery classes:
+a witnessed at-least-once \texttt{Peer.send} gives agent-to-agent
+messaging crash-safe, deduplicated semantics --- conversations survive
+the death of either party's host, which no ad-hoc agent protocol we
+know of provides. Second, taking the rule strictly is actually
+expressible: if search or payments must be reachable, they enter the
+network as \emph{service agents} --- checked \textsc{Entoli} programs
+wrapping one foreign binding each, admitted and attested like any
+member --- which is the lingua-franca conclusion of the base
+paper~\cite{entoli2026} made literal.
+
+\section{Migration}
+
+\paragraph{In transit, a capsule is powerless.} This is the design's
+signature property applied to the network: interception, copying, or
+indefinite archival of a capsule in flight yields its data (whose
+handling class the capsule itself declares, computed as the join of
+what it holds) and \emph{no authority whatsoever}. There are no tickets
+to steal, no tokens to replay, no revocation race: revocation is the
+receiving host not granting. Transit security therefore reduces to
+confidentiality and integrity of bytes --- ordinary problems with
+ordinary solutions.
+
+\paragraph{One active owner — the one genuinely new mechanism.}
+\textsc{Entoli}'s affinity machinery (one-shot continuations, one-shot
+materialisation) is per-host; nothing in it stops two hosts from
+resuming two copies of a shipped $\sigma$, after which two agents act
+in the world under one identity. The network needs distributed
+single-ownership. Under the membership trust model --- attested,
+honest-but-crashing hosts --- the mechanism is small: before shipping,
+the sender durably commits a \emph{handoff record} (``migrated to host
+$H$, capsule hash $h$'') as a terminal journal entry, after which its
+own runtime refuses local resumption; the receiver acknowledges
+admission; a crash between those steps leaves the capsule recoverable
+at exactly one of the two, decidable from the two stores --- the same
+frontier discipline the single-host machine already proves sound.
+Against \emph{byzantine} members --- a host that lies about having
+shipped --- single-ownership requires a lease registry or consensus
+among hosts, and we scope that out of version one explicitly: the
+membership that attestation establishes is also the membership the
+handoff protocol trusts. Hierarchical continuation identity, already
+mandated by the base design for concurrency, gives capsules globally
+scopable names for free.
+
+\section{Transport}
+
+The capsule layer is deliberately transport-agnostic: TLS between
+attested endpoints suffices. A self-destructing executable-envelope
+transport such as CTP (capsules that run, render, wipe, and cease)
+composes naturally as the wire --- it moves bytes with strong
+ephemerality properties and says nothing about what the payload does,
+which is precisely the half \textsc{Entoli} supplies. Two boundaries
+must be kept sharp if that pairing is pursued. Ephemerality applies to
+\emph{transit only}: an \textsc{Entoli} capsule's $\sigma$ must persist
+durably inside the admitting host or every durability guarantee is
+forfeit. And the network's security argument must not inherit the
+transport's cryptographic novelty claims; the design above assumes
+nothing stronger than authenticated, confidential channels.
+
+\section{Threat model and non-goals}
+
+Enforced: a capsule cannot act beyond its grants (containment); cannot
+carry authority between hosts (authority at rest); cannot be silently
+re-run against changed code or semantics (content addressing,
+compatibility tokens, quarantine); cannot lose or duplicate an external
+effect beyond its declared delivery contract (recovery determinacy,
+conditional on contracts as always); and cannot be duplicated across
+honest hosts (handoff). Assumed: host integrity within the attested
+membership --- a compromised member host can misuse exactly the
+authority it would legitimately hold, no more, but for the capsules it
+hosts that is full misuse; attestation shrinks this surface and cannot
+remove it. Not addressed, deliberately: agents with different goals
+remain agents with different goals --- membership makes interaction
+\emph{well-formed}, not benign; claims exchanged between agents still
+need validation; and wire-level imitation by non-members is contained,
+not prevented. The precise promise is the one we can keep: \emph{an
+agent can move between approved hosts, regain permissions under local
+policy, and interact exclusively with authenticated, checked
+\textsc{Entoli} peers.}
+
+\section{What exists and what must be built}
+
+Exists, with proofs or tests, in the base artifact: the checker and its
+receiver-side independence; the durable machine with crash-tested
+recovery; authority at rest with byte-level verification; content
+addressing with drift quarantine; run-from-source hosting of checked
+programs. To build, in order: (1) the capsule envelope --- manifest
+format and the $\sigma$ packaging, the base design's named
+``interchange obligation one''; (2) host admission --- verify, re-check,
+policy, grant, resume, which composes existing pieces; (3) the
+\texttt{Peer} effect and host-mediated channels; (4) the handoff
+protocol; (5) attestation wiring. Items (1)--(3) sit directly on the
+implementation as it stands; (4) is small under the stated trust model;
+(5) is integration. The appropriate next artifact is a design note and
+its adversarial review, in the discipline the base project has used
+throughout --- not code.
+
+\section{Related work}
+
+Telescript~\cite{white1996telescript} and Aglets~\cite{lange1998aglets}
+define the ambition; the mobile-agent security literature
+\cite{chess1998mobile} defines the failure modes this proposal is built
+against. Workload identity and attestation
+(SPIFFE/SPIRE~\cite{spiffe}) supply membership. Capability-based agent
+confinement in live processes is established
+\cite{odersky2026securing,debenedetti2025camel}; the capsule network is
+what such confinement becomes when the process is allowed to die and
+move. Durable execution \cite{burckhardt2021durable} supplies the
+recovery vocabulary the capsule's journal carries with it. The base
+design, its theorems, its reference interpreter, and the authorship
+study this proposal leans on are presented in \cite{entoli2026}.
+
+\section{Conclusion}
+
+Mobile agents were a good idea missing two theorems. With checkable
+behaviour at admission and authority that cannot exist at rest, a
+capsule network over attested hosts stops being a trust exercise and
+becomes an engineering plan with a short, explicit build list --- and
+one honest open mechanism, distributed ownership, scoped to a trust
+model attestation already pays for. The agents the network would carry
+are being written by models today; the study in the base paper suggests
+they can be written \emph{in} the one language whose rules make them
+safe to admit.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{entoli,capsule}
+
+\end{document}

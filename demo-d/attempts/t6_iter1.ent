@@ -1,0 +1,13 @@
+effect Ask prompt { ask : Int -> Int @idempotent }
+
+def apply_once : (Int -[Ask]-o Int) -[Ask]-> Int =
+  fn k -> resume k 7
+
+def compute : Unit -[Ask]-> Int =
+  fn u -> do Ask.ask(0) + 100
+
+def run : Cap[Ask] -[]-> Int =
+  fn cap ->
+    handle compute(()) with Ask {
+      ask(x; k) -> apply_once(k)
+    } using cap

@@ -1,0 +1,16 @@
+effect Pricing prompt { quote : Str -> Int @idempotent }
+effect Ledger suspending { post : Data -> Data @at_least_once }
+
+def basket : Unit -[Pricing]-> Int =
+  fn u ->
+    let a = do Pricing.quote("apple") in
+    let b = do Pricing.quote("bread") in
+    a + b
+
+def checkout : Cap[Pricing] -[Ledger]-> Data =
+  fn cap ->
+    let n = handle basket(()) with Pricing {
+      quote(x; k) -> if x == "apple" then resume k 3 else resume k 5
+    } using cap in
+    let p = do Ledger.post(Total(n)) witness concat("basket:", str_of_int(n)) in
+    Recorded(p)

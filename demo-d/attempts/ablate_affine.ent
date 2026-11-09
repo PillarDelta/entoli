@@ -1,0 +1,3 @@
+effect Ask prompt { ask : Int -> Int @idempotent }
+def twice : (Int -[Ask]-o Int) -[Ask]-> Int =
+  fn kk -> let a = resume kk 1 in resume kk 2

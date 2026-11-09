@@ -1,0 +1,2 @@
+effect Ledger suspending { post : Data -> Data @at_least_once }
+def main : Data -[Ledger]-> Data = fn e -> do Ledger.post(e)

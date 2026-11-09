@@ -1,0 +1,29 @@
+effect Lookup prompt { find : Data -> Int @idempotent }
+
+def scan_ok : Unit -[Lookup]-> Int =
+  fn u -> do Lookup.find(Known(3)) + do Lookup.find(Unknown()) + do Lookup.find(Known(5))
+
+def scan_bad : Unit -[Lookup]-> Int =
+  fn u -> do Lookup.find(Known(3)) + do Lookup.find(Banned(9)) + do Lookup.find(Known(5))
+
+def resolve_ok : Cap[Lookup] -[]-> Data =
+  fn cap ->
+    handle scan_ok(()) with Lookup {
+      find(x; k) -> match x {
+        Known(n) -> resume k (n * 2)
+        Banned(n) -> Refused(n)
+        other -> resume k 0
+      }
+      return r -> Found(r)
+    } using cap
+
+def resolve_bad : Cap[Lookup] -[]-> Data =
+  fn cap ->
+    handle scan_bad(()) with Lookup {
+      find(x; k) -> match x {
+        Known(n) -> resume k (n * 2)
+        Banned(n) -> Refused(n)
+        other -> resume k 0
+      }
+      return r -> Found(r)
+    } using cap
