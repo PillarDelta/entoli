@@ -1,34 +1,35 @@
 # ENTOLI
 
-**A programming language where surviving a crash, acting exactly once, and
-holding only granted authority are properties of the type system — not of
-discipline.**
+**A language where crash recovery, exactly-once effects, and capability
+safety are type-checked — not engineered.**
 
-ENTOLI is a small language and runtime for programs that act on the real
-world and cannot afford to get it wrong: agents that call models, wait days
-for a human decision, and then publish, pay, or deploy. An ENTOLI program
-survives `kill -9` at any instruction, resumes cold — in a new process, on a
-new machine — exactly where it stopped, and never silently repeats or loses
-an external effect.
+Kill an ENTOLI program at any instruction. It resumes cold — new process,
+new machine, a week later — exactly where it stopped. No external effect is
+repeated. None is lost. And the file it slept in could not have acted on
+anyone's behalf, because there is no authority inside it to steal.
 
-Consider what that takes today. An agent that drafts with an LLM, suspends
-for human approval, and posts the result needs a workflow engine for
-durability, idempotency keys and retry wrappers for exactly-once delivery,
-and careful credential hygiene so that a snapshot of the sleeping agent
-cannot be stolen and replayed with its secrets inside. Three guarantees,
-three separate subsystems, held together by engineering care. ENTOLI derives
-all three from one mechanism — **typed algebraic effect handlers with
-one-shot continuations**:
+None of this is a careful runtime doing its best. It is what the checker
+establishes about a program before it is allowed to run.
 
-- every external operation is a declared **effect**, journaled together with
-  the program's saved continuation *before* the world is contacted;
-- every operation carries its **recovery contract in its type** — a program
-  that performs an effect it cannot recover does not compile;
-- **capabilities are runtime-only values with no serialized form** — what
-  sleeps on disk is data with zero power.
+ENTOLI exists for programs that act on the real world and cannot get it
+wrong: agents that call a model, wait days for a human decision, then
+publish, pay, or deploy. Building one today means buying three guarantees
+from three different places — a workflow engine for durability, idempotency
+keys and retry wrappers for exactly-once delivery, credential hygiene so a
+snapshot of the sleeping agent can't be replayed with its secrets inside —
+and then holding them together by care. ENTOLI derives all three from a
+single mechanism: **typed algebraic effect handlers with one-shot
+continuations**.
 
-This is a complete durable workflow in ENTOLI — the pilot this repository
-ships and tests ([`pilot/brief.ent`](pilot/brief.ent)):
+- Every external operation is a declared **effect**, journaled with its
+  saved continuation *before* the world is touched.
+- Every effect states **how it recovers, in its type**. A program that
+  performs an effect it cannot recover does not compile.
+- **Capabilities have no serialized form.** What sleeps on disk is data,
+  with zero power.
+
+Here is the whole idea in one program — the pilot this repository ships and
+tests ([`pilot/brief.ent`](pilot/brief.ent)):
 
 ```text
 effect Infer    suspending { complete : Str -> Str  @at_least_once }
@@ -45,12 +46,12 @@ def brief : Str -[Infer, Approval, Publish]-> Data =
     }
 ```
 
-No queue, no state machine, no retry wrapper — plain sequential code. Yet:
-kill the process mid-draft and recovery replays under the same witness, so
-the model is never paid twice; the approval can take a week with nothing
-running and no credential on disk; crash during publish and recover as many
-times as you like — the post still happens exactly once. All of it follows
-from the three type annotations above.
+No queue, no state machine, no retry wrapper — plain sequential code. Yet
+kill the process mid-draft, and recovery replays under the same witness: the
+model is never paid twice. The approval can take a week, with nothing
+running and no credential on disk. Crash during publish and recover as many
+times as you like — the post happens exactly once. All of it follows from
+the three `@at_least_once` annotations above.
 
 ENTOLI is designed to be **written by models and verified by a checker**:
 agents propose programs, the checker is the hard boundary, and only valid
