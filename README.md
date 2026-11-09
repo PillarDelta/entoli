@@ -37,6 +37,23 @@ protocol; it is an absence.
 
 ![Authority at rest](docs/figures/authority.svg)
 
+## Getting started
+
+All you need is a [Rust toolchain](https://rustup.rs) (stable). SQLite is
+bundled — there are no system dependencies.
+
+```sh
+git clone https://github.com/PillarDelta/entoli.git
+cd entoli
+cargo build --release -p entoli-cli
+
+# the full crash/recovery suite ships in-tree
+cargo test --workspace
+```
+
+The binary lands at `./target/release/entoli-cli`; the walkthrough below uses
+it as `$B`.
+
 ## Seen end to end
 
 The pilot in [`pilot/brief.ent`](pilot/brief.ent): a model drafts a brief, a
@@ -46,7 +63,6 @@ human approves it — with the process dead in between, for as long as it takes
 ![The pilot](docs/figures/pilot.svg)
 
 ```sh
-cargo build --release -p entoli-cli
 B=./target/release/entoli-cli
 
 # run: the draft happens, the human gate suspends, the process exits
