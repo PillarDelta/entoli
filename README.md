@@ -1,13 +1,56 @@
 # ENTOLI
 
-**A programming language for durable, capability-safe AI agents.**
+**A programming language where surviving a crash, acting exactly once, and
+holding only granted authority are properties of the type system — not of
+discipline.**
 
-AI agents that act on the world need three guarantees at once: the work must
-survive process death, a tool call must never be silently repeated or lost,
-and an agent must never exercise authority it was not granted. Today those are
-three separate subsystems held together by care. ENTOLI derives all three from
-one mechanism — typed effect handlers with one-shot continuations — so they
-are properties of the type system, not of discipline.
+ENTOLI is a small language and runtime for programs that act on the real
+world and cannot afford to get it wrong: agents that call models, wait days
+for a human decision, and then publish, pay, or deploy. An ENTOLI program
+survives `kill -9` at any instruction, resumes cold — in a new process, on a
+new machine — exactly where it stopped, and never silently repeats or loses
+an external effect.
+
+Consider what that takes today. An agent that drafts with an LLM, suspends
+for human approval, and posts the result needs a workflow engine for
+durability, idempotency keys and retry wrappers for exactly-once delivery,
+and careful credential hygiene so that a snapshot of the sleeping agent
+cannot be stolen and replayed with its secrets inside. Three guarantees,
+three separate subsystems, held together by engineering care. ENTOLI derives
+all three from one mechanism — **typed algebraic effect handlers with
+one-shot continuations**:
+
+- every external operation is a declared **effect**, journaled together with
+  the program's saved continuation *before* the world is contacted;
+- every operation carries its **recovery contract in its type** — a program
+  that performs an effect it cannot recover does not compile;
+- **capabilities are runtime-only values with no serialized form** — what
+  sleeps on disk is data with zero power.
+
+This is a complete durable workflow in ENTOLI — the pilot this repository
+ships and tests ([`pilot/brief.ent`](pilot/brief.ent)):
+
+```text
+effect Infer    suspending { complete : Str -> Str  @at_least_once }
+effect Approval suspending { request  : Str -> Data @at_least_once }
+effect Publish  suspending { post     : Str -> Str  @at_least_once }
+
+def brief : Str -[Infer, Approval, Publish]-> Data =
+  fn topic ->
+    let draft = do Infer.complete(concat("Write a crisp 150-word brief on: ", topic))
+                witness concat("draft:", topic) in
+    match do Approval.request(draft) witness concat("gate:", topic) {
+      approve() -> Published(do Publish.post(draft) witness concat("pub:", topic))
+      reject()  -> Halted(topic)
+    }
+```
+
+No queue, no state machine, no retry wrapper — plain sequential code. Yet:
+kill the process mid-draft and recovery replays under the same witness, so
+the model is never paid twice; the approval can take a week with nothing
+running and no credential on disk; crash during publish and recover as many
+times as you like — the post still happens exactly once. All of it follows
+from the three type annotations above.
 
 ENTOLI is designed to be **written by models and verified by a checker**:
 agents propose programs, the checker is the hard boundary, and only valid
