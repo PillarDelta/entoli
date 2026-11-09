@@ -96,7 +96,7 @@ pinned by the test suite.
 
 ## The paper
 
-The working paper is [`paper/ENTOLI_V3.docx`](paper/ENTOLI_V3.docx) —
+The working paper is [`paper/ENTOLI_V3.pdf`](paper/ENTOLI_V3.pdf) —
 semantics, theorems, the authorship study, and the evaluation. A companion
 position paper on a network of mobile ENTOLI agents over attested hosts is
 [`paper/capsule-network.tex`](paper/capsule-network.tex).

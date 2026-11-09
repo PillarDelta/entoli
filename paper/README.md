@@ -1,6 +1,6 @@
 # Papers
 
-- **`ENTOLI_V3.docx`** — the working paper: the calculus, the durable machine
+- **`ENTOLI_V3.pdf`** — the working paper: the calculus, the durable machine
   and its theorems, authority at rest, the model-authorship study, and the
   evaluation. This is the canonical text.
 - **`capsule-network.tex`** (+ `entoli.bib`, `capsule.bib`) — companion
