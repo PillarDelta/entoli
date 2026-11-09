@@ -1,66 +1,71 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="880" height="400" viewBox="0 0 880 400" font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif">
-  <defs>
-    <filter id="s" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000000" flood-opacity="0.08"/>
-    </filter>
-  </defs>
-  <rect width="880" height="400" fill="#fbfbfd"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="430" viewBox="0 0 880 430" font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <rect width="880" height="430" rx="20" fill="#161617"/>
 
-  <text x="48" y="52" font-size="21" font-weight="600" fill="#1d1d1f">Agents propose. The checker decides. The runtime confines.</text>
-  <text x="48" y="76" font-size="13.5" fill="#86868b">No program runs unless every effect is declared, recoverable, and within its granted authority.</text>
+  <text x="48" y="58" font-size="22" font-weight="600" fill="#f5f5f7">Agents propose. The checker decides. The runtime confines.</text>
+  <text x="48" y="84" font-size="13.5" fill="#a1a1a6">No program runs unless every effect is declared, recoverable, and within its granted authority.</text>
 
-  <g text-anchor="middle">
-    <g filter="url(#s)">
-      <rect x="48"  y="110" width="168" height="96" rx="18" fill="#ffffff" stroke="#e5e5ea"/>
-      <rect x="258" y="110" width="200" height="96" rx="18" fill="#0071e3"/>
-      <rect x="500" y="110" width="168" height="96" rx="18" fill="#ffffff" stroke="#e5e5ea"/>
-      <rect x="710" y="110" width="122" height="96" rx="18" fill="#ffffff" stroke="#e5e5ea"/>
+  <!-- row of four equal cards: x = 48, 254, 460, 666; w=180 h=104 -->
+  <g>
+    <rect x="48"  y="122" width="180" height="104" rx="14" fill="#26262a" stroke="#3a3a3e"/>
+    <rect x="254" y="122" width="180" height="104" rx="14" fill="#0a84ff"/>
+    <rect x="460" y="122" width="180" height="104" rx="14" fill="#26262a" stroke="#3a3a3e"/>
+    <rect x="666" y="122" width="180" height="104" rx="14" fill="#26262a" stroke="#3a3a3e"/>
+  </g>
+  <g text-anchor="middle" font-size="10.5" font-weight="600" letter-spacing="1.2">
+    <text x="138" y="148" fill="#8e8e93">AI AGENT</text>
+    <text x="344" y="148" fill="#cfe6ff">CHECKER · THE BOUNDARY</text>
+    <text x="550" y="148" fill="#8e8e93">RUNTIME</text>
+    <text x="756" y="148" fill="#8e8e93">WORLD</text>
+  </g>
+  <g text-anchor="middle" font-size="12.5">
+    <g fill="#f5f5f7">
+      <text x="138" y="172">writes an ENTOLI</text>
+      <text x="138" y="190">program from a</text>
+      <text x="138" y="208">one-page spec</text>
     </g>
-    <text x="132" y="138" font-size="11" font-weight="600" fill="#86868b">AI AGENT</text>
-    <text x="132" y="162" font-size="12.5" fill="#1d1d1f">writes an ENTOLI</text>
-    <text x="132" y="179" font-size="12.5" fill="#1d1d1f">program from a</text>
-    <text x="132" y="196" font-size="12.5" fill="#1d1d1f">one-page spec</text>
-
-    <text x="358" y="138" font-size="11" font-weight="600" fill="#bcd9f7">CHECKER — THE BOUNDARY</text>
-    <text x="358" y="162" font-size="12.5" fill="#ffffff">every effect declared + handled</text>
-    <text x="358" y="179" font-size="12.5" fill="#ffffff">every tool call recoverable</text>
-    <text x="358" y="196" font-size="12.5" fill="#ffffff">nothing beyond the granted set</text>
-
-    <text x="584" y="138" font-size="11" font-weight="600" fill="#86868b">RUNTIME</text>
-    <text x="584" y="162" font-size="12.5" fill="#1d1d1f">grants capabilities,</text>
-    <text x="584" y="179" font-size="12.5" fill="#1d1d1f">journals every step,</text>
-    <text x="584" y="196" font-size="12.5" fill="#1d1d1f">executes the handlers</text>
-
-    <text x="771" y="138" font-size="11" font-weight="600" fill="#86868b">WORLD</text>
-    <text x="771" y="162" font-size="12.5" fill="#1d1d1f">models, tools,</text>
-    <text x="771" y="179" font-size="12.5" fill="#1d1d1f">payments, human</text>
-    <text x="771" y="196" font-size="12.5" fill="#1d1d1f">approvals</text>
+    <g fill="#ffffff">
+      <text x="344" y="172">every effect declared,</text>
+      <text x="344" y="190">every tool call recoverable,</text>
+      <text x="344" y="208">nothing beyond its grants</text>
+    </g>
+    <g fill="#f5f5f7">
+      <text x="550" y="172">grants capabilities,</text>
+      <text x="550" y="190">journals every step,</text>
+      <text x="550" y="208">executes the handlers</text>
+    </g>
+    <g fill="#f5f5f7">
+      <text x="756" y="172">models, tools,</text>
+      <text x="756" y="190">payments,</text>
+      <text x="756" y="208">human approvals</text>
+    </g>
   </g>
 
-  <g stroke="#d2d2d7" stroke-width="1.5" fill="#d2d2d7">
-    <line x1="216" y1="158" x2="250" y2="158"/><polygon points="250,154.5 258,158 250,161.5"/>
-    <line x1="458" y1="158" x2="492" y2="158"/><polygon points="492,154.5 500,158 492,161.5"/>
-    <line x1="668" y1="158" x2="702" y2="158"/><polygon points="702,154.5 710,158 702,161.5"/>
+  <!-- forward arrows -->
+  <g stroke="#48484c" stroke-width="1.5" fill="#48484c">
+    <line x1="228" y1="174" x2="246" y2="174"/><polygon points="246,170.5 254,174 246,177.5"/>
+    <line x1="434" y1="174" x2="452" y2="174"/><polygon points="452,170.5 460,174 452,177.5"/>
+    <line x1="640" y1="174" x2="658" y2="174"/><polygon points="658,170.5 666,174 658,177.5"/>
   </g>
-  <text x="479" y="148" text-anchor="middle" font-size="10.5" font-weight="600" fill="#1d8a3e">valid</text>
+  <text x="447" y="166" text-anchor="middle" font-size="10" font-weight="600" letter-spacing="0.5" fill="#30d158">valid</text>
 
-  <path d="M 358 206 L 358 236 L 132 236 L 132 210" fill="none" stroke="#ff453a" stroke-width="1.5"/>
-  <polygon points="128.5,210 132,202 135.5,210" fill="#ff453a"/>
-  <text x="245" y="229" text-anchor="middle" font-size="11.5" fill="#ff453a">invalid — diagnostics return to the agent, which repairs and retries</text>
+  <!-- feedback loop: checker bottom -> under -> agent bottom -->
+  <path d="M 344 226 L 344 268 L 138 268 L 138 226" fill="none" stroke="#ff6961" stroke-width="1.5"/>
+  <polygon points="134.5,226 138,218 141.5,226" fill="#ff6961"/>
+  <rect x="146" y="258" width="192" height="20" rx="10" fill="#161617"/>
+  <text x="242" y="272" text-anchor="middle" font-size="11" fill="#ff6961">invalid · diagnostics · retry</text>
 
-  <g filter="url(#s)">
-    <rect x="500" y="252" width="168" height="74" rx="18" fill="#1d1d1f"/>
+  <!-- durable store under runtime -->
+  <rect x="460" y="268" width="180" height="88" rx="14" fill="#000000" stroke="#3a3a3e"/>
+  <text x="550" y="294" text-anchor="middle" font-size="10.5" font-weight="600" letter-spacing="1.2" fill="#8e8e93">DURABLE STORE</text>
+  <text x="550" y="316" text-anchor="middle" font-size="12.5" fill="#f5f5f7">journal + continuations</text>
+  <text x="550" y="334" text-anchor="middle" font-size="12.5" font-weight="600" fill="#ff9f0a">zero authority inside</text>
+  <g stroke="#48484c" stroke-width="1.5" fill="#48484c">
+    <line x1="534" y1="226" x2="534" y2="260"/><polygon points="530.5,260 534,268 537.5,260"/>
+    <line x1="566" y1="268" x2="566" y2="234"/><polygon points="562.5,234 566,226 569.5,234"/>
   </g>
-  <text x="584" y="278" text-anchor="middle" font-size="11" font-weight="600" fill="#86868b">DURABLE STORE</text>
-  <text x="584" y="298" text-anchor="middle" font-size="12.5" fill="#f5f5f7">journal + continuations</text>
-  <text x="584" y="315" text-anchor="middle" font-size="12.5" fill="#ff9f0a">zero authority inside</text>
-  <g stroke="#d2d2d7" stroke-width="1.5" fill="#d2d2d7">
-    <line x1="568" y1="206" x2="568" y2="244"/><polygon points="564.5,244 568,252 571.5,244"/>
-    <line x1="600" y1="252" x2="600" y2="214"/><polygon points="596.5,214 600,206 603.5,214"/>
-  </g>
-  <text x="700" y="285" font-size="11.5" fill="#86868b">survives kill −9,</text>
-  <text x="700" y="301" font-size="11.5" fill="#86868b">reboot, redeploy</text>
+  <text x="666" y="306" font-size="11.5" fill="#a1a1a6">survives kill −9,</text>
+  <text x="666" y="322" font-size="11.5" fill="#a1a1a6">reboot, redeploy</text>
 
-  <text x="48" y="368" font-size="13.5" fill="#1d1d1f"><tspan font-weight="600">Measured:</tspan> over an adversarial task set, closed-book model-written programs never violated the semantic</text>
-  <text x="48" y="388" font-size="13.5" fill="#1d1d1f">restrictions in any checked generation. The rules are learnable from one page.</text>
+  <line x1="48" y1="380" x2="832" y2="380" stroke="#2c2c2e"/>
+  <text x="48" y="406" font-size="12.5" fill="#a1a1a6"><tspan font-weight="600" fill="#f5f5f7">Measured</tspan> — over an adversarial task set, closed-book model-written programs never violated the semantic restrictions in any checked generation.</text>
 </svg>

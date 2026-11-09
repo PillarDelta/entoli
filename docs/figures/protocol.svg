@@ -1,70 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="880" height="400" viewBox="0 0 880 400" font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif">
-  <defs>
-    <filter id="s" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000000" flood-opacity="0.08"/>
-    </filter>
-  </defs>
-  <rect width="880" height="400" fill="#fbfbfd"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="430" viewBox="0 0 880 430" font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <rect width="880" height="430" rx="20" fill="#161617"/>
 
-  <text x="48" y="52" font-size="21" font-weight="600" fill="#1d1d1f">One tool call, crash-safe at every step.</text>
-  <text x="48" y="76" font-size="13.5" fill="#86868b">The five-step effect protocol. Only the green steps touch the durable journal — atomically.</text>
+  <text x="48" y="58" font-size="22" font-weight="600" fill="#f5f5f7">One tool call, crash-safe at every step.</text>
+  <text x="48" y="84" font-size="13.5" fill="#a1a1a6">The five-step effect protocol. Only the green steps write the durable journal — atomically.</text>
 
-  <g text-anchor="middle">
-    <g filter="url(#s)">
-      <rect x="48" y="108" width="140" height="92" rx="16" fill="#ffffff" stroke="#e5e5ea"/>
-      <rect x="208" y="108" width="150" height="92" rx="16" fill="#ffffff" stroke="#e5e5ea"/>
-      <rect x="378" y="108" width="140" height="92" rx="16" fill="#ffffff" stroke="#e5e5ea"/>
-      <rect x="538" y="108" width="140" height="92" rx="16" fill="#ffffff" stroke="#e5e5ea"/>
-      <rect x="698" y="108" width="134" height="92" rx="16" fill="#ffffff" stroke="#e5e5ea"/>
-    </g>
-    <g font-size="11" font-weight="600">
-      <text x="118" y="132" fill="#34c759">1 · INTEND · DURABLE</text>
-      <text x="283" y="132" fill="#ff9f0a">2 · INVOKE</text>
-      <text x="448" y="132" fill="#ff9f0a">3 · RECEIVE</text>
-      <text x="608" y="132" fill="#34c759">4 · COMMIT · DURABLE</text>
-      <text x="765" y="132" fill="#0071e3">5 · RESUME</text>
-    </g>
-    <g font-size="12" fill="#1d1d1f">
-      <text x="118" y="155">intent + continuation</text>
-      <text x="118" y="171">saved first, in one</text>
-      <text x="118" y="187">transaction</text>
-      <text x="283" y="155">the handler clause runs;</text>
-      <text x="283" y="171">its foreign call is the</text>
-      <text x="283" y="187">only world contact</text>
-      <text x="448" y="155">the result arrives,</text>
-      <text x="448" y="171">in volatile</text>
-      <text x="448" y="187">memory only</text>
-      <text x="608" y="155">one in-place write:</text>
-      <text x="608" y="171">Pending becomes</text>
-      <text x="608" y="187">Done(result)</text>
-      <text x="765" y="155">the program</text>
-      <text x="765" y="171">continues — at most</text>
-      <text x="765" y="187">once per run</text>
-    </g>
+  <!-- five equal cards: w=144, gap=16: x = 48,208,368,528,688 -->
+  <g>
+    <rect x="48"  y="122" width="144" height="104" rx="14" fill="#26262a" stroke="#30d158"/>
+    <rect x="208" y="122" width="144" height="104" rx="14" fill="#26262a" stroke="#3a3a3e"/>
+    <rect x="368" y="122" width="144" height="104" rx="14" fill="#26262a" stroke="#3a3a3e"/>
+    <rect x="528" y="122" width="144" height="104" rx="14" fill="#26262a" stroke="#30d158"/>
+    <rect x="688" y="122" width="144" height="104" rx="14" fill="#26262a" stroke="#3a3a3e"/>
   </g>
-  <g stroke="#d2d2d7" stroke-width="1.5" fill="#d2d2d7">
-    <line x1="188" y1="154" x2="202" y2="154"/><polygon points="202,150.5 208,154 202,157.5"/>
-    <line x1="358" y1="154" x2="372" y2="154"/><polygon points="372,150.5 378,154 372,157.5"/>
-    <line x1="518" y1="154" x2="532" y2="154"/><polygon points="532,150.5 538,154 532,157.5"/>
-    <line x1="678" y1="154" x2="692" y2="154"/><polygon points="692,150.5 698,154 692,157.5"/>
+  <g text-anchor="middle" font-size="10.5" font-weight="600" letter-spacing="1.2">
+    <text x="120" y="148" fill="#30d158">1 · INTEND</text>
+    <text x="280" y="148" fill="#ff9f0a">2 · INVOKE</text>
+    <text x="440" y="148" fill="#ff9f0a">3 · RECEIVE</text>
+    <text x="600" y="148" fill="#30d158">4 · COMMIT</text>
+    <text x="760" y="148" fill="#0a84ff">5 · RESUME</text>
+  </g>
+  <g text-anchor="middle" font-size="12" fill="#f5f5f7">
+    <text x="120" y="172">intent + saved</text>
+    <text x="120" y="189">continuation first,</text>
+    <text x="120" y="206">in one transaction</text>
+    <text x="280" y="172">the handler runs;</text>
+    <text x="280" y="189">its foreign call is</text>
+    <text x="280" y="206">the world contact</text>
+    <text x="440" y="172">the result arrives,</text>
+    <text x="440" y="189">in volatile</text>
+    <text x="440" y="206">memory only</text>
+    <text x="600" y="172">one in-place write:</text>
+    <text x="600" y="189">Pending becomes</text>
+    <text x="600" y="206">Done(result)</text>
+    <text x="760" y="172">the program</text>
+    <text x="760" y="189">continues, at most</text>
+    <text x="760" y="206">once per run</text>
+  </g>
+  <g stroke="#48484c" stroke-width="1.5" fill="#48484c">
+    <line x1="192" y1="174" x2="200" y2="174"/><polygon points="200,170.5 208,174 200,177.5"/>
+    <line x1="352" y1="174" x2="360" y2="174"/><polygon points="360,170.5 368,174 360,177.5"/>
+    <line x1="512" y1="174" x2="520" y2="174"/><polygon points="520,170.5 528,174 520,177.5"/>
+    <line x1="672" y1="174" x2="680" y2="174"/><polygon points="680,170.5 688,174 680,177.5"/>
   </g>
 
-  <line x1="208" y1="222" x2="678" y2="222" stroke="#ff453a" stroke-width="1.5"/>
-  <line x1="208" y1="216" x2="208" y2="222" stroke="#ff453a" stroke-width="1.5"/>
-  <line x1="678" y1="216" x2="678" y2="222" stroke="#ff453a" stroke-width="1.5"/>
-  <text x="443" y="242" text-anchor="middle" font-size="12.5" font-weight="600" fill="#ff453a">the crash window — the process may die anywhere here</text>
+  <!-- crash window underline -->
+  <line x1="208" y1="246" x2="672" y2="246" stroke="#ff6961" stroke-width="1.5"/>
+  <line x1="208" y1="240" x2="208" y2="246" stroke="#ff6961" stroke-width="1.5"/>
+  <line x1="672" y1="240" x2="672" y2="246" stroke="#ff6961" stroke-width="1.5"/>
+  <text x="440" y="268" text-anchor="middle" font-size="11.5" font-weight="600" fill="#ff6961">the crash window — the process may die anywhere here</text>
 
-  <g filter="url(#s)">
-    <rect x="48" y="266" width="784" height="56" rx="16" fill="#ffffff" stroke="#e5e5ea"/>
-  </g>
-  <text x="72" y="289" font-size="12" font-weight="600" fill="#1d1d1f">The durable journal</text>
-  <text x="72" y="307" font-size="12" fill="#86868b">recovery reads this, and nothing else</text>
-  <rect x="268" y="281" width="270" height="26" rx="13" fill="#fff4e6"/>
-  <text x="403" y="298" text-anchor="middle" font-size="12" fill="#c93400">Pending · operation · delivery class · witness</text>
-  <rect x="556" y="281" width="120" height="26" rx="13" fill="#e8faed"/>
-  <text x="616" y="298" text-anchor="middle" font-size="12" fill="#1d8a3e">Done · result</text>
-  <text x="700" y="298" font-size="12" fill="#86868b">nothing is ever lost</text>
+  <!-- journal strip -->
+  <rect x="48" y="292" width="784" height="60" rx="14" fill="#000000" stroke="#3a3a3e"/>
+  <text x="72" y="317" font-size="10.5" font-weight="600" letter-spacing="1.2" fill="#8e8e93">DURABLE JOURNAL</text>
+  <text x="72" y="337" font-size="11.5" fill="#a1a1a6">recovery reads this, and nothing else</text>
+  <rect x="300" y="307" width="256" height="28" rx="14" fill="#2b1d10"/>
+  <text x="428" y="325" text-anchor="middle" font-size="11.5" fill="#ff9f0a">Pending · op · delivery class · witness</text>
+  <rect x="572" y="307" width="110" height="28" rx="14" fill="#0f3d23"/>
+  <text x="627" y="325" text-anchor="middle" font-size="11.5" fill="#30d158">Done · result</text>
+  <text x="700" y="325" font-size="11.5" fill="#a1a1a6">nothing is ever lost</text>
 
-  <text x="48" y="356" font-size="13" fill="#1d1d1f"><tspan font-weight="600">Recovery is decided, not guessed.</tspan>  Before 1: never attempted — rerun.  Inside the window: Pending — re-invoke</text>
-  <text x="48" y="376" font-size="13" fill="#1d1d1f">by its declared delivery class, same witness, the service deduplicates.  After 4: Done — deliver the result, never repeat.</text>
+  <line x1="48" y1="380" x2="832" y2="380" stroke="#2c2c2e"/>
+  <text x="48" y="404" font-size="12.5" fill="#a1a1a6"><tspan font-weight="600" fill="#f5f5f7">Recovery is decided, not guessed</tspan> — before 1: rerun · in the window: re-invoke by declared class, same witness · after 4: deliver, never repeat.</text>
 </svg>
