@@ -197,4 +197,4 @@ position paper on a network of mobile ENTOLI agents over attested hosts is
 Copyright © 2026 Pillar Delta PC. Free for noncommercial use under the
 [PolyForm Noncommercial License 1.0.0](LICENSE) — research, education,
 personal projects, and noncommercial organizations. For commercial use:
-licensing@pillardelta.com.
+info@pillardelta.ai
