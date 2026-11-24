@@ -1,7 +1,24 @@
-# ENTOLI
+<div align="center">
+
+<img src="docs/figures/banner.svg" alt="ENTOLI — kill it at any instruction; it resumes exactly where it stopped" width="100%">
+
+<br><br>
 
 **A language where crash recovery, exactly-once effects, and capability
 safety are type-checked — not engineered.**
+
+[![License: PolyForm Noncommercial](https://img.shields.io/badge/license-PolyForm_Noncommercial-0a84ff)](LICENSE)
+[![Built in Rust](https://img.shields.io/badge/built_in-Rust-ce412b)](#getting-started)
+[![Tests](https://img.shields.io/badge/crash%2Frecovery_suite-89_passing-30d158)](#what-is-established-measured-and-open)
+[![Paper](https://img.shields.io/badge/paper-PDF-8e8e93)](paper/ENTOLI_V3.pdf)
+
+[Getting started](#getting-started) · [The pilot](#seen-end-to-end) ·
+[What's proved](#what-is-established-measured-and-open) ·
+[The paper](paper/ENTOLI_V3.pdf)
+
+</div>
+
+---
 
 Kill an ENTOLI program at any instruction. It resumes cold — new process,
 new machine, a week later — exactly where it stopped. No external effect is

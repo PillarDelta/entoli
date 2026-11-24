@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="400" viewBox="0 0 1600 400" font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="35%" r="80%">
+      <stop offset="0%" stop-color="#1e1e22"/>
+      <stop offset="100%" stop-color="#121214"/>
+    </radialGradient>
+    <linearGradient id="runL" gradientUnits="userSpaceOnUse" x1="150" y1="302" x2="640" y2="302">
+      <stop offset="0%" stop-color="#0a84ff" stop-opacity="0"/>
+      <stop offset="25%" stop-color="#0a84ff"/>
+      <stop offset="100%" stop-color="#64b5ff"/>
+    </linearGradient>
+    <linearGradient id="runR" gradientUnits="userSpaceOnUse" x1="890" y1="302" x2="1450" y2="302">
+      <stop offset="0%" stop-color="#30d158"/>
+      <stop offset="80%" stop-color="#30d158"/>
+      <stop offset="100%" stop-color="#30d158" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="400" rx="24" fill="url(#bgGlow)"/>
+
+  <text x="800" y="150" text-anchor="middle" font-size="104" font-weight="700" letter-spacing="20" fill="#f5f5f7">ENTOLI</text>
+  <text x="800" y="208" text-anchor="middle" font-size="25" fill="#a1a1a6">The programming language for AI agents that act on the real world</text>
+
+  <!-- lifeline -->
+  <line x1="150" y1="302" x2="640" y2="302" stroke="url(#runL)" stroke-width="5" stroke-linecap="round"/>
+  <g stroke="#ff6961" stroke-width="5.5" stroke-linecap="round">
+    <line x1="676" y1="284" x2="712" y2="320"/>
+    <line x1="712" y1="284" x2="676" y2="320"/>
+  </g>
+  <text x="694" y="262" text-anchor="middle" font-size="19" font-weight="600" fill="#ff6961" letter-spacing="1.5">KILL −9</text>
+  <line x1="748" y1="302" x2="848" y2="302" stroke="#48484c" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 18"/>
+  <circle cx="890" cy="302" r="10" fill="#161617" stroke="#30d158" stroke-width="4"/>
+  <line x1="902" y1="302" x2="1450" y2="302" stroke="url(#runR)" stroke-width="5" stroke-linecap="round"/>
+
+  <g font-size="19" text-anchor="middle">
+    <text x="395" y="348" fill="#64b5ff">running</text>
+    <text x="798" y="348" fill="#8e8e93">days pass</text>
+    <text x="1170" y="348" fill="#30d158">resumes exactly where it stopped — exactly once</text>
+  </g>
+</svg>
