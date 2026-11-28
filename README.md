@@ -7,7 +7,7 @@
 **A language where crash recovery, exactly-once effects, and capability
 safety are type-checked — not engineered.**
 
-[![License: PolyForm Noncommercial](https://img.shields.io/badge/license-PolyForm_Noncommercial-0a84ff)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-0a84ff)](LICENSE)
 [![Built in Rust](https://img.shields.io/badge/built_in-Rust-ce412b)](#getting-started)
 [![Tests](https://img.shields.io/badge/crash%2Frecovery_suite-89_passing-30d158)](#what-is-established-measured-and-open)
 [![Paper](https://img.shields.io/badge/paper-PDF-8e8e93)](paper/ENTOLI_V3.pdf)
@@ -194,7 +194,6 @@ position paper on a network of mobile ENTOLI agents over attested hosts is
 
 ---
 
-Copyright © 2026 Pillar Delta PC. Free for noncommercial use under the
-[PolyForm Noncommercial License 1.0.0](LICENSE) — research, education,
-personal projects, and noncommercial organizations. For commercial use:
-info@pillardelta.ai
+Copyright © 2026 Pillar Delta PC. Open source under the
+[Apache License 2.0](LICENSE). ENTOLI is a trademark of Pillar Delta PC.
+Contact: info@pillardelta.ai
